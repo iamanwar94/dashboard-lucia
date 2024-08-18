@@ -1,4 +1,5 @@
 import { Dashboard } from "@/components/dashboard";
+import { validateRequest } from "@/lib/auth";
 
 export default function Home() {
   return (

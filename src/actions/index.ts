@@ -1,11 +1,12 @@
 import { lucia } from "@/lib/auth";
-import { User } from "@/lib/db";
-// import { hash, verify } from "@node-rs/argon2";
+import { connectToDatabase, User } from "@/lib/db";
 import { generateIdFromEntropySize } from "lucia";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import bcrypt from "bcryptjs";
 
 export const login = async (formData: any) => {
+  "use server";
   const username = formData.get("username");
   if (
     typeof username !== "string" ||
@@ -30,15 +31,10 @@ export const login = async (formData: any) => {
       error: "invalid username or password",
     };
   }
-
-  // const validPassword = await verify(existingUser.hashed_password, password, {
-  //   memoryCost: 19456,
-  //   timeCost: 2,
-  //   outputLen: 32,
-  //   parallelism: 1,
-  // });
-
-  const validPassword = existingUser.hashed_password === password;
+  const validPassword = await bcrypt.compare(
+    password,
+    existingUser.hashed_password
+  );
 
   if (!validPassword) {
     return {
@@ -58,8 +54,13 @@ export const login = async (formData: any) => {
 };
 
 export const signup = async (formData: any) => {
-  console.log("loading => form data", formData);
+  "use server";
+
   const username = formData.get("username");
+  const password = formData.get("password");
+
+  console.log("loading => form data", username, password);
+
   if (
     typeof username !== "string" ||
     username.length < 3 ||
@@ -70,7 +71,6 @@ export const signup = async (formData: any) => {
     };
   }
 
-  const password = formData.get("password");
   if (typeof password !== "string" || username.length < 6) {
     return {
       error: "invalid password",
@@ -78,18 +78,21 @@ export const signup = async (formData: any) => {
   }
 
   const existingUser = await User.findOne({ username });
-  if (!existingUser) {
+
+  console.log("loading => existingUser", existingUser);
+
+  if (existingUser) {
     return {
-      error: "invalid username or password",
+      error: "user already exists",
     };
   }
 
-  // const hashed_password = await hash(password);
+  const hashed_password = await bcrypt.hash(password, 10);
   const userId = generateIdFromEntropySize(10);
 
   await User.insertOne({
     _id: userId,
-    hashed_password: password,
+    hashed_password,
     username,
   });
 

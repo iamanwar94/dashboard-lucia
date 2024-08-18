@@ -4,9 +4,17 @@ import { Collection, MongoClient } from "mongodb";
 const uri = process.env.MONGODB_URI || "";
 
 const client = new MongoClient(uri);
-async () => {
-  await client.connect();
-};
+
+export async function connectToDatabase() {
+  try {
+    await client.connect();
+    console.log("Connected to MongoDB");
+  } catch (error) {
+    console.error("Failed to connect to MongoDB", error);
+  }
+}
+
+connectToDatabase();
 
 export const db = client.db();
 export const User = db.collection("users") as Collection<UserDoc>;

@@ -28,10 +28,11 @@ const Signup = async () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Username</Label>
             <Input
-              id="email"
-              type="email"
+              id="username"
+              name="username"
+              type="text"
               placeholder="example@email.com"
               required
             />
@@ -42,6 +43,7 @@ const Signup = async () => {
               <Input
                 id="password"
                 type="password"
+                name="password"
                 placeholder="Enter your password"
                 required
               />
