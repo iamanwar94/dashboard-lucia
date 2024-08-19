@@ -1,5 +1,5 @@
 import { lucia } from "@/lib/auth";
-import { connectToDatabase, User } from "@/lib/db";
+import { User } from "@/lib/db";
 import { generateIdFromEntropySize } from "lucia";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
