@@ -10,8 +10,8 @@ export const login = async (formData: any) => {
   const username = formData.get("username");
   if (
     typeof username !== "string" ||
-    username.length < 3 ||
-    !/^[a-z0-9_-]+$/.test(username)
+    username.length < 3
+    // !/^[a-z0-9_-]+$/.test(username)
   ) {
     return {
       error: "invalid username",
@@ -59,12 +59,10 @@ export const signup = async (formData: any) => {
   const username = formData.get("username");
   const password = formData.get("password");
 
-  console.log("loading => form data", username, password);
-
   if (
     typeof username !== "string" ||
-    username.length < 3 ||
-    !/^[a-z0-9_-]+$/.test(username)
+    username.length < 3
+    // !/^[a-z0-9_-]+$/.test(username)
   ) {
     return {
       error: "invalid username",
@@ -78,8 +76,6 @@ export const signup = async (formData: any) => {
   }
 
   const existingUser = await User.findOne({ username });
-
-  console.log("loading => existingUser", existingUser);
 
   if (existingUser) {
     return {

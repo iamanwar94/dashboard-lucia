@@ -19,6 +19,7 @@ export const lucia = new Lucia(adapter, {
 
 export const validateRequest = cache(async () => {
   const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+
   if (!sessionId) {
     return {
       user: null,
@@ -29,7 +30,7 @@ export const validateRequest = cache(async () => {
   const result = await lucia.validateSession(sessionId);
 
   try {
-    if (result.session && result.session.fresh) {
+    if (result.session) {
       const sessionCookie = lucia.createSessionCookie(result.session.id);
       cookies().set(
         sessionCookie.name,

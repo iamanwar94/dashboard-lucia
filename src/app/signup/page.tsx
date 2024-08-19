@@ -12,8 +12,15 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signup } from "@/actions";
+import { redirect } from "next/navigation";
+import { validateRequest } from "@/lib/auth";
+import Link from "next/link";
 
 const Signup = async () => {
+  const { user }: any = await validateRequest();
+
+  if (user) return redirect("/");
+
   return (
     <form
       className="flex justify-center items-center bg-black h-screen"
@@ -60,6 +67,16 @@ const Signup = async () => {
             Sign Up
           </Button>
         </CardFooter>
+        <div className="text-center text-sm text-muted-foreground my-4">
+          Already have an account?{" "}
+          <Link
+            href="/signin"
+            className="underline underline-offset-4"
+            prefetch={false}
+          >
+            Sign in
+          </Link>
+        </div>
       </Card>
     </form>
   );
